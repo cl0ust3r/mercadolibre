@@ -6,7 +6,7 @@ services:
         volumes:
           - /mnt/efs:/app/registro
         ports:
-            - 5003:5000
+            - 5000:5000
 
         build: app/.
         restart: always
@@ -18,7 +18,7 @@ services:
         volumes:
           - /mnt/efs:/app/registro
         ports:
-            - 5004:5000
+            - 5001:5000
 
         build: app/.
         restart: always
