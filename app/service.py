@@ -1,45 +1,79 @@
-import logging
-from logging.handlers import RotatingFileHandler
+import json
+import os
 from flask import Flask, request
-from flask_restful import Resource, Api, abort
+from flask import jsonify
+from flask_json import FlaskJSON, JsonError, json_response
 
 app = Flask(__name__)
-api = Api(app)
-
-ids = {}
-
-def abort_request(id):
-    if id not in ids:
-        abort(404, message="ID {} doesn't exist".format(id))
+FlaskJSON(app)
 
 
-class service(Resource):
+@app.route('/json/<int:id>', methods=['GET'])
+def get(id):
+    try:
+        value = read(str(id))
+        return jsonify(value)
+    except (KeyError, TypeError, ValueError):
+        raise JsonError(description='No existe registro')
 
-    def post(self, id):
+@app.route('/json/<int:id>', methods=['DELETE'])
+def delete(id):
+    try:
+        remove(str(id))
+        return "Registro Borrado"
+    except (KeyError, TypeError, ValueError):
+        raise JsonError(description='No existe registro')
 
-        ids[id] = request.form['data']
-        app.logger.info('INFO:')
-        return {id: ids[id]}
 
-    def get(self, id):
-        app.logger.info('INFO:')
-        return {id: ids[id]}
+@app.route('/json', methods=['PUT'])
+def put():
+    data = request.get_json(force=True)
+    try:
+        id = int(data['id'])
+        save(str(id), data)
 
-    def delete(self, id):
-        abort_request(id)
-        app.logger.info('INFO:')
-        del ids[id]
-        return '', 204
+        return "Registro Actualizado"
+    except (KeyError, TypeError, ValueError):
+        raise JsonError(description='No existe registro')
 
-    def put(self, id):
-        ids[id] = request.form['data']
-        app.logger.info('INFO:')
-        return {id: ids[id]}
 
-api.add_resource(service, '/json/<string:id>')
+@app.route('/json', methods=['POST'])
+def post():
+    data = request.get_json(force=True)
+    try:
+        id = int(data['id'])
+        value = json_response(id=id)
+        save(str(id), data)
+
+    except (KeyError, TypeError, ValueError):
+        raise JsonError(description='Valor Invalido')
+    return value
+
+
+def save(id, data):
+    try:
+        with open('registro/'+id, 'w') as outfile:
+            json.dump(data, outfile)
+    except (KeyError, TypeError, ValueError):
+        return "Error Guardando Registro"
+
+
+def read(id):
+    try:
+        file = os.path.join('registro/', id)
+        with open(file) as loadid:
+            getdata =json.load(loadid)
+        return getdata
+
+    except (KeyError, TypeError, ValueError):
+        return "Error leyendo el Registro"
+
+def remove(id):
+    try:
+        os.remove('registro/'+id)
+    except (KeyError, TypeError, ValueError):
+        return "Error Borrando Registro"
+
 
 if __name__ == '__main__':
-    handler = RotatingFileHandler('service.log', maxBytes=10000, backupCount=1)
-    handler.setLevel(logging.INFO)
-    app.logger.addHandler(handler)
-    app.run("0.0.0.0", port=5000)
+    app.run(debug=True)
