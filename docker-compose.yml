@@ -1,0 +1,65 @@
+version: '2'
+
+services:
+    nginx:
+        build: nginx/.
+        ports:
+            - 80:80
+
+        restart: always
+        networks:
+            vpcbr:
+                ipv4_address: 10.5.0.2
+
+    idjsonweb0:
+        ports:
+            - 5000:5000
+        depends_on:
+            - nginx
+        build: .
+        restart: always
+        networks:
+            vpcbr:
+                ipv4_address: 10.5.0.3
+
+    idjsonweb1:
+        ports:
+            - 5002:5000
+        depends_on:
+            - nginx
+        build: .
+        restart: always
+        networks:
+            vpcbr:
+                ipv4_address: 10.5.0.4
+
+
+    idjsonweb2:
+        ports:
+            - 5003:5000
+        depends_on:
+            - nginx
+        build: .
+        restart: always
+        networks:
+            vpcbr:
+                ipv4_address: 10.5.0.5
+
+    idjsonweb3:
+        ports:
+            - 5004:5000
+        depends_on:
+            - nginx
+        build: .
+        restart: always
+        networks:
+            vpcbr:
+                ipv4_address: 10.5.0.6
+
+networks:
+  vpcbr:
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.5.0.0/16
+         gateway: 10.5.0.1
