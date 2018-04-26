@@ -13,7 +13,7 @@ services:
 
     idjsonweb0:
         volumes:
-          - /mnt/ebs:/app/registro
+          - /mnt/efs:/app/registro
         ports:
             - 5000:5000
         depends_on:
@@ -26,7 +26,7 @@ services:
 
     idjsonweb1:
         volumes:
-          - /mnt/ebs:/app/registro
+          - /mnt/efs:/app/registro
         ports:
             - 5002:5000
         depends_on:

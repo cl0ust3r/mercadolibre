@@ -4,7 +4,7 @@ services:
 
     idjsonweb2:
         volumes:
-          - /mnt/ebs:/app/registro
+          - /mnt/efs:/app/registro
         ports:
             - 5003:5000
 
@@ -16,7 +16,7 @@ services:
 
     idjsonweb3:
         volumes:
-          - /mnt/ebs:/app/registro
+          - /mnt/efs:/app/registro
         ports:
             - 5004:5000
 
