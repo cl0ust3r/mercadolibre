@@ -16,7 +16,7 @@ services:
             - 5000:5000
         depends_on:
             - nginx
-        build: .
+        build: app/.
         restart: always
         networks:
             vpcbr:
@@ -27,7 +27,7 @@ services:
             - 5002:5000
         depends_on:
             - nginx
-        build: .
+        build: app/.
         restart: always
         networks:
             vpcbr:
@@ -39,7 +39,7 @@ services:
             - 5003:5000
         depends_on:
             - nginx
-        build: .
+        build: app/.
         restart: always
         networks:
             vpcbr:
@@ -50,7 +50,7 @@ services:
             - 5004:5000
         depends_on:
             - nginx
-        build: .
+        build: app/.
         restart: always
         networks:
             vpcbr:
@@ -62,4 +62,4 @@ networks:
     ipam:
      config:
        - subnet: 10.5.0.0/16
-         gateway: 10.5.0.1
+         gateway: 10.5.0.254
